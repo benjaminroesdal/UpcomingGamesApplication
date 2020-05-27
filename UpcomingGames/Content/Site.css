@@ -181,6 +181,32 @@ footer > p {
     width:100%;
 }
 
+.PC_logo {
+    width: 12.5%;
+    height: 100%;
+}
+
+.PS4_logo {
+    width: 12.5%;
+    height: 100%;
+}
+
+.XBOX_logo {
+    width: 12.5%;
+    height: 100%;
+}
+
+.SWITCH_logo {
+    width: 12.5%;
+    height: 100%;
+}
+
+.platform_container {
+    display: flex;
+    height: 30px;
+    background-color: #383838;
+}
+
 
 @media only screen and (max-width:1600px) {
     .game_container {

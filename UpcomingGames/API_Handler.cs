@@ -80,8 +80,9 @@ namespace UpcomingGames
             List<GameModel> templist = new List<GameModel>();
             try
             {
-                var gamesgames = await GetThisMonthGames($"games?dates={date},2020-12-31&developers=16257,1612,10,109,131691,16261,6,18664,405,425,8933,13071,4132,3678,3232,774,14020,26425,313,120,8230,5342,3801,14819,5366,124,1971,4,4207,343,14641,13207,14278,18495,13972,3715,9023,18487,13972,4037,4303,6763&ordering=released&page_size=5&page={pageindex}");
-                    foreach (var item in gamesgames)
+                var gamesgames = await GetThisMonthGames($"games?dates={date},2020-12-31&publishers=354,20987,308,918,3408,358,19651,10212,339,3399,2150,350,1283,1307,10830,311,2155,8352,243,11687,10691,1294,713,10877,515,11186,7411,11279,7133,31896,241,9065,3428,3790,258,31904,4910,10302,14724,11237,34843&ordering=released&page_size=5&page={pageindex}");
+                //var gamesgames = await GetThisMonthGames($"games?dates={date},2020-12-31&ordering=rating&ordering=released&page_size=5&page={pageindex}");
+                foreach (var item in gamesgames)
                     {
                         templist.Add(item);
                     }

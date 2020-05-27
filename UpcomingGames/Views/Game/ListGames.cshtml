@@ -75,7 +75,22 @@
                     <div class="game_info" id="game_info_1">
                         @for (int i = 0; i < item.platforms.Count; i++)
                         {
-                            <p>@item.platforms.ElementAt(i)</p>
+                            if (item.platforms.ElementAt(i) == "PC")
+                            {
+                                <img class="PC_logo" src="~/Images/PC_logo.png" alt="PC" />
+                            }
+                            else if (item.platforms.ElementAt(i) == "PlayStation")
+                            {
+                                <img class="PS4_logo" src="~/Images/PS4_logo.png" alt="PS4" />
+                            }
+                            else if (item.platforms.ElementAt(i) == "Xbox")
+                            {
+                                <img class="XBOX_logo" src="~/Images/XBOX_logo.png" alt="PS4" />
+                            }
+                            else if (item.platforms.ElementAt(i) == "Nintendo Switch")
+                            {
+                                <img class="SWITCH_logo" src="~/Images/SWITCH_logo.png" alt="PS4" />
+                            }
                         }
                     </div>
                 </div>

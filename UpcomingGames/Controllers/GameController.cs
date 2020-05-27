@@ -80,7 +80,7 @@ namespace UpcomingGames.Controllers
         [HttpPost]
         public ActionResult InfiniteScroll(int pageindex)
         {
-            System.Threading.Thread.Sleep(200);
+            System.Threading.Thread.Sleep(10);
             int pagesize = 5;
             API_Handler getRequest = new API_Handler();
             var syncContext = SynchronizationContext.Current;

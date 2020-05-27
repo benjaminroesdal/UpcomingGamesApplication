@@ -12,6 +12,8 @@ namespace UpcomingGames.Models
     {
         public List<string> short_images = new List<string>();
         public List<string> platforms = new List<string>();
+
+
         public int game_id { get; set; }
         public string name { get; set; } = null;
         public string released { get; set; } = null;
@@ -43,26 +45,25 @@ namespace UpcomingGames.Models
                     bg_image = short_images.ElementAt(0);
                 }
             }
-            catch (Exception)
-            {
-
-
-            }
-
-            try
-            {
-                for (int i = 0; i < 6; i++)
-                {
-                    platforms.Add((string)jUser["platforms"][i]["platform"]["name"]);
-                }
-            }
             catch (Exception e)
             {
             }
 
             try
             {
-                for (int i = 1; i < 6; i++)
+                for (int i = 0; i < 6; i++)
+                {
+                    platforms.Add((string)jUser["parent_platforms"][i]["platform"]["name"]);
+                }
+            }
+            catch (Exception e)
+            {
+            }
+
+
+            try
+            {
+                for (int i = 0; i < 6; i++)
                 {
                     short_images.Add((string)jUser["short_screenshots"][i]["image"]);
                 }
