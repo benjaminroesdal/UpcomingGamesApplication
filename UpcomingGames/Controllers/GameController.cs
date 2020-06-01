@@ -23,38 +23,17 @@ namespace UpcomingGames.Controllers
         }
 
 
-        public async Task<ActionResult> ListGames()
+        public ActionResult ListGames()
         {
-            int pagesize = 5;
-            API_Handler getRequest = new API_Handler();
-            var rowdata = await getRequest.ThisYearsReleases(1, pagesize);
+            //API_Handler getRequest = new API_Handler();
+            //var rowdata = await getRequest.GetThisMonthGames();
+            System.Threading.Thread.Sleep(200);
+            GameCollection instance = GameCollection.Instance;
+            var syncContext = SynchronizationContext.Current;
+            SynchronizationContext.SetSynchronizationContext(null);
+            var rowdata = instance.GetGameList().Result;
             return View(rowdata);
         }
-
-        public async Task<ActionResult> ListSortedGames(string date1,string date2)
-        {
-            API_Handler getRequest = new API_Handler();
-            await getRequest.SpecificGetRequest(date1,date2);
-            IEnumerable<GameModel> query = getRequest.gamerequest.OrderBy(GameModel => GameModel.released);
-            return View(getRequest.gamerequest);
-        }
-
-        //public ActionResult ListGamesScroll(int pageindex = 2)
-        //{
-        //    API_Handler getRequest = new API_Handler();
-        //    var syncContext = SynchronizationContext.Current;
-        //    SynchronizationContext.SetSynchronizationContext(null);
-
-        //    var model = getRequest.ThisYearsReleases(pageindex).Result;
-
-        //    return PartialView(model);
-        //}
-
-
-
-
-        ///
-
 
 
         protected string renderPartialViewToString(string Viewname, object model)
@@ -78,14 +57,14 @@ namespace UpcomingGames.Controllers
         }
 
         [HttpPost]
-        public ActionResult InfiniteScroll(int pageindex)
+        public ActionResult InfiniteScroll(int pageoffset)
         {
-            System.Threading.Thread.Sleep(10);
+            System.Threading.Thread.Sleep(200);
             int pagesize = 5;
-            API_Handler getRequest = new API_Handler();
+            GameCollection instance = GameCollection.Instance;
             var syncContext = SynchronizationContext.Current;
             SynchronizationContext.SetSynchronizationContext(null);
-            List<GameModel> tbrow = getRequest.ThisYearsReleases(pageindex,pagesize).Result;
+            List<GameModel> tbrow = instance.InfiniteScrollList(pageoffset);
             JsonModel jsonmodel = new JsonModel();
             jsonmodel.NoMoreData = tbrow.Count < pagesize;
             jsonmodel.HTMLString = renderPartialViewToString("ListGamesScroll", tbrow);

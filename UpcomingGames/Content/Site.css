@@ -203,8 +203,16 @@ footer > p {
 
 .platform_container {
     display: flex;
-    height: 30px;
+    height: 200px;
+    flex-direction:column !important;
     background-color: #383838;
+}
+
+.platform_text {
+    color:white;
+}
+.release_text {
+    color:white;
 }
 
 

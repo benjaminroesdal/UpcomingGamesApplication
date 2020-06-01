@@ -4,41 +4,18 @@
     ViewBag.Title = "ListGames";
 }
     <div class="wrapper">
-        <div class="date_wrapper">
-            @using (Html.BeginForm("ListSortedGames", "Game", FormMethod.Get))
-            {
-                <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd">
-                    <div class="datepicker_div">
-                        <input type="text" class="form-control" id="date1" name="date1">
-                        <div class="input-group-addon">
-                            <span class="glyphicon glyphicon-th"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd">
-                    <div class="datepicker_div">
-                        <input type="text" class="form-control" id="date2" name="date2">
-                        <div class="input-group-addon">
-                            <span class="glyphicon glyphicon-th"></span>
-                        </div>
-                    </div>
-                </div>
-                <input type="submit" value="Search" name="Search" />
-            }
-        </div>
             @foreach (var item in Model)
             {
                 <div class="game_container">
                     <div class="game_info" id="game_info_1">
                         <p class="game_name">@Html.DisplayFor(modelItem => item.name)</p>
-                        @{ string temp_dat = item.GetReadableDate(item.released);}
-                        <p class="release_date_text">@Html.DisplayFor(modelItem => temp_dat)</p>
+                        <p class="release_date_text">@item.UnixTimeStampToDateTime(double.Parse(item.newest_release_date)) </p>
                     </div>
                     <div id="@item.game_id" class="carousel slide slideshow" data-ride="carousel" data-interval="false">
                         <!-- Indicators -->
                         <!-- Wrapper for slides -->
                         <div class="carousel-inner">
-                            @for (int i = 0; i < item.short_images.Count; i++)
+                            @for (int i = 0; i < item.images.Count; i++)
                             {
                                 if (i == 0 && item.YT_trailer != null)
                                 {
@@ -47,16 +24,16 @@
                                         </iframe>
                                     </div>
                                 }
-                                else if (i == 0 && item.YT_trailer == null)
+                                else if (i == 0)
                                 {
                                     <div class="item active">
-                                        <img src="@item.short_images.ElementAt(i)" class="carousel_image" alt="Los Angeles">
+                                        <img src="@item.images.ElementAt(i)" class="carousel_image" alt="Los Angeles">
                                     </div>
                                 }
                                 else
                                 {
                                     <div class="item">
-                                        <img src="@item.short_images.ElementAt(i)" class="carousel_image" alt="Los Angeles">
+                                        <img src="@item.images.ElementAt(i)" class="carousel_image" alt="Los Angeles">
                                     </div>
                                 }
                             }
@@ -73,25 +50,46 @@
                         </a>
                     </div>
                     <div class="game_info" id="game_info_1">
-                        @for (int i = 0; i < item.platforms.Count; i++)
-                        {
-                            if (item.platforms.ElementAt(i) == "PC")
+                        <div class="platform_container">
+                            @for (int i = 0; i < item.platforms.Count; i++)
                             {
-                                <img class="PC_logo" src="~/Images/PC_logo.png" alt="PC" />
+                                if (item.platforms.ElementAt(i) == 6)
+                                {
+                                    <p class="platform_text">PC</p>
+                                    <p class="release_text">@item.UnixTimeStampToDateTime(double.Parse(item.release_dates.ElementAt(i)))</p>
+                                }
+                                else if (item.platforms.ElementAt(i) == 11)
+                                {
+                                    <p class="platform_text">Xbox</p>
+                                    <p class="release_text">@item.UnixTimeStampToDateTime(double.Parse(item.release_dates.ElementAt(i)))</p>
+                                }
+                                else if (item.platforms.ElementAt(i) == 48)
+                                {
+                                    <p class="platform_text">PS4</p>
+                                    <p class="release_text">@item.UnixTimeStampToDateTime(double.Parse(item.release_dates.ElementAt(i)))</p>
+                                }
+                                else if (item.platforms.ElementAt(i) == 203)
+                                {
+                                    <p class="platform_text">Google Stadia</p>
+                                    <p class="release_text">@item.UnixTimeStampToDateTime(double.Parse(item.release_dates.ElementAt(i)))</p>
+                                }
+                                else if (item.platforms.ElementAt(i) == 167)
+                                {
+                                    <p class="platform_text">PS5</p>
+                                    <p class="release_text">@item.UnixTimeStampToDateTime(double.Parse(item.release_dates.ElementAt(i)))</p>
+                                }
+                                else if (item.platforms.ElementAt(i) == 169)
+                                {
+                                    <p class="platform_text">Xbox Series X</p>
+                                    <p class="release_text">@item.UnixTimeStampToDateTime(double.Parse(item.release_dates.ElementAt(i)))</p>
+                                }
+                                else if (item.platforms.ElementAt(i) == 49)
+                                {
+                                    <p class="platform_text">Xbox One</p>
+                                    <p class="release_text">@item.UnixTimeStampToDateTime(double.Parse(item.release_dates.ElementAt(i)))</p>
+                                }
                             }
-                            else if (item.platforms.ElementAt(i) == "PlayStation")
-                            {
-                                <img class="PS4_logo" src="~/Images/PS4_logo.png" alt="PS4" />
-                            }
-                            else if (item.platforms.ElementAt(i) == "Xbox")
-                            {
-                                <img class="XBOX_logo" src="~/Images/XBOX_logo.png" alt="PS4" />
-                            }
-                            else if (item.platforms.ElementAt(i) == "Nintendo Switch")
-                            {
-                                <img class="SWITCH_logo" src="~/Images/SWITCH_logo.png" alt="PS4" />
-                            }
-                        }
+                        </div>
                     </div>
                 </div>
             }
@@ -108,7 +106,7 @@
 
     <script>
         $(document).ready(function () {
-    var pageindex = 2;
+    var pageoffset = 5;
     var NoMoreData = false;
     var inProgress = false;
 
@@ -120,9 +118,9 @@
                     inProgress = true;
                     $("#loadingdiv").show();
 
-                    $.post("@Url.Action("InfiniteScroll", "Game")", { "pageindex": pageindex },
+                    $.post("@Url.Action("InfiniteScroll", "Game")", { "pageoffset": pageoffset },
                         function (data) {
-                            pageindex = pageindex + 1;
+                            pageoffset = pageoffset + 5;
                             NoMoredata = data.NoMoredata;
                             $("#trow").append(data.HTMLString);
                             $("#loadingdiv").hide();
