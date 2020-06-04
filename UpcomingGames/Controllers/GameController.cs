@@ -22,25 +22,26 @@ namespace UpcomingGames.Controllers
             return View();
         }
 
-
+        [OutputCache(Duration = 86400)]
         public ActionResult ListGames()
         {
+            GameCollection gameCollection = new GameCollection();
             //API_Handler getRequest = new API_Handler();
             //var rowdata = await getRequest.GetThisMonthGames();
-            System.Threading.Thread.Sleep(200);
-            GameCollection instance = GameCollection.Instance;
+            System.Threading.Thread.Sleep(200);;
             var syncContext = SynchronizationContext.Current;
             SynchronizationContext.SetSynchronizationContext(null);
-            var rowdata = instance.GetGameList().Result;
+            var rowdata = gameCollection.GetGameList().Result;
             return View(rowdata);
         }
 
 
+        [OutputCache(Duration = 86400)]
         protected string renderPartialViewToString(string Viewname, object model)
         {
             if (string.IsNullOrEmpty(Viewname))
                 Viewname = ControllerContext.RouteData.GetRequiredString("action");
-            ViewData.Model = model;
+                ViewData.Model = model;
             using (StringWriter sw = new StringWriter())
             {
                 ViewEngineResult viewresult = ViewEngines.Engines.FindPartialView(ControllerContext, Viewname);
@@ -56,22 +57,24 @@ namespace UpcomingGames.Controllers
             public bool NoMoreData { get; set; }
         }
 
-        [HttpPost]
+        [OutputCache(Duration = 86400)]
         public ActionResult InfiniteScroll(int pageoffset)
         {
+            GameCollection gameCollection = new GameCollection();
             System.Threading.Thread.Sleep(200);
             int pagesize = 5;
-            GameCollection instance = GameCollection.Instance;
             var syncContext = SynchronizationContext.Current;
             SynchronizationContext.SetSynchronizationContext(null);
-            List<GameModel> tbrow = instance.InfiniteScrollList(pageoffset);
+            var data = gameCollection.GameList().Result;
+            List<GameModel> tbrow = gameCollection.InfiniteScrollList(pageoffset);
             JsonModel jsonmodel = new JsonModel();
             jsonmodel.NoMoreData = tbrow.Count < pagesize;
             jsonmodel.HTMLString = renderPartialViewToString("ListGamesScroll", tbrow);
             return Json(jsonmodel);
         }
 
-        [ChildActionOnly]
+
+        [OutputCache(Duration = 86400)]
         public ActionResult ListGamesScroll(List<GameModel> Model)
         {
             return PartialView(Model);

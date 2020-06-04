@@ -147,6 +147,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\lotsofgamues.PNG" />
+    <Content Include="Images\PC.svg" />
+    <Content Include="Images\ps4.svg" />
+    <Content Include="Images\xbox-one.svg" />
+    <Content Include="Images\xbox-x.svg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
@@ -182,7 +187,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Images\" />
     <Folder Include="Views\Home\" />
   </ItemGroup>
   <ItemGroup>

@@ -14,13 +14,16 @@ namespace UpcomingGames.Models
         public List<string> images = new List<string>();
         public List<int> platforms = new List<int>();
         public List<string> release_dates = new List<string>();
+        public List<int> newest_platform_releases = new List<int>();
 
-
+        public bool duplicate { get; set; }
         public int game_id { get; set; }
         public string name { get; set; } = null;
         public string released { get; set; } = null;
         public string newest_release_date { get; set; } = null;
+        public int newest_platform_release { get; set; }
         public string YT_trailer { get; set; } = null;
+        public string cover_image { get; set; } = null;
 
 
         public GameModel(string json, int count = 0)
@@ -30,6 +33,7 @@ namespace UpcomingGames.Models
             game_id = Int32.Parse((string)jUser["id"]);
             name = jUser["name"].ToString();
             released = UnixTimeStampToDateTime(double.Parse((string)jUser["first_release_date"]));
+            cover_image = "//images.igdb.com/igdb/image/upload/t_cover_small_2x/" + (string)jUser["cover"]["image_id"] + ".jpg";
             try
             {
                     if (jUser.Children().Count() == 7)
@@ -71,6 +75,7 @@ namespace UpcomingGames.Models
             }
 
 
+
             //The code below gets a tempdate, and a tempplatform from the jUser, it then iterates on the int (tempplat)
             //to see if the platforms list already contains an integer matching the one just found, if it does, it will check which integer is lowest, and keep the lowest one for that platform.
             //(The reason i keep the lowest is because, usually a game will release globally at the same time except a few smaller regions, but i only care about the bigger portion of the world),
@@ -102,7 +107,7 @@ namespace UpcomingGames.Models
                                 if (platforms.ElementAt(j) == tempplat)
                                 {
                                     //If the tempdate is lower than the current date at the (j) index, it will remove the higher int, and replace it with the lower version (tempdate)
-                                    if (Int32.Parse(tempdate) < Int32.Parse(release_dates.ElementAt(j)))
+                                    if (Int32.Parse(tempdate) < Int32.Parse(release_dates.ElementAt(j)) && Int32.Parse(tempdate) < (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds)
                                     {
                                         release_dates.RemoveAt(j);
                                         platforms.RemoveAt(j);
@@ -134,9 +139,7 @@ namespace UpcomingGames.Models
             {
 
             }
-
-            //Takes the last release date, and puts it into a string named newest_release_date
-            newest_release_date = release_dates[release_dates.Count - 1];
+            SetClosestReleaseDate();
         }
 
         public string GetReadableDate(string original_date)
@@ -157,6 +160,47 @@ namespace UpcomingGames.Models
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             string date = dtDateTime.ToLongDateString();
             return date;
+        }
+
+        public void SetClosestReleaseDate()
+        {
+            Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            int tempint = Int32.Parse(release_dates.Last()) - unixTimestamp;
+            int tempindex = 0;
+            for (int i = 0; i < release_dates.Count; i++)
+            {
+                if (unixTimestamp < Int32.Parse(release_dates.ElementAt(i)))
+                {
+                    int tempintdifference;
+                    tempintdifference = Int32.Parse(release_dates.ElementAt(i)) - unixTimestamp;
+                    if (tempintdifference <= tempint)
+                    {
+                        tempint = tempintdifference;
+                        tempindex = i;
+                    }
+                    else
+                    {
+
+                    }
+                }
+                else
+                {
+
+                }
+            }
+            newest_release_date = release_dates[tempindex];
+            //Takes the last release date, and puts it into a string named newest_release_date
+            for (int i = 0; i < release_dates.Count; i++)
+            {
+                if (release_dates.ElementAt(i) == newest_release_date)
+                {
+                    newest_platform_releases.Add(platforms.ElementAt(i));
+                }
+                else
+                {
+
+                }
+            }
         }
     }
 }

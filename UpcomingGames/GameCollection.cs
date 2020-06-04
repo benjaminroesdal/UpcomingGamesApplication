@@ -10,15 +10,15 @@ namespace UpcomingGames
 {
     public class GameCollection
     {
-        private static readonly GameCollection instance = new GameCollection();
 
-        List<GameModel> listofgames = new List<GameModel>();
+        public List<GameModel> listofgames = new List<GameModel>();
         public int offset = 0;
 
         public async Task<List<GameModel>> GameList()
         {
             API_Handler getRequest = new API_Handler();
             listofgames = await getRequest.GetThisMonthGames();
+            SortGameList();
             return listofgames;
         }
 
@@ -77,21 +77,6 @@ namespace UpcomingGames
 
             }
             return templist;
-        }
-
-        static GameCollection()
-        {
-        }
-        private GameCollection()
-        {
-        }
-
-        public static GameCollection Instance
-        {
-        get
-        {
-        return instance;
-        }
         }
     }
 }
