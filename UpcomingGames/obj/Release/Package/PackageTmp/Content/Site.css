@@ -1,18 +1,22 @@
 ﻿html, body {
     overflow-x: hidden;
 }
+* {
+    text-decoration:none !important;
+}
 
 p {
     margin:0;
+    text-decoration:none;
 }
+
 
 body {
 }
 
 /* Set padding to keep content from hitting the edges */
 .body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+
 }
 
 .wrapper {
@@ -134,4 +138,123 @@ footer {
     white-space: normal;
 }
 
+
+/*
+    MODAL VIEW STYLING
+*/
+.modal-open {
+    padding:0 !important;
+}
+
+.modal-dialog {
+    width: 944px !important;
+    height: 485px !important;
+    max-width: 1900px !important;
+    max-height: 1200px !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+    margin-top: 8% !important;
+    margin-bottom: 0 !important;
+}
+
+.modal-content {
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+#myModalContent {
+    height:100%;
+}
+
+.detail_container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(41, 44, 54, .80);
+    backdrop-filter: blur(2px);
+}
+
+#myModal {
+    height: 100%;
+    width: 100%;
+
+}
+
+.col_1 {
+    width: 60%;
+    height: 100%;
+}
+
+.col_2 {
+    width: 40%;
+    height: 100%;
+}
+
+.game_info_wrapper {
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:space-between;
+}
+
+.col_1_sub_1 {
+    width:100%;
+    height:66%;
+}
+.col_1_sub_2 {
+    width: 100%;
+    height: 34%;
+    display:flex;
+    flex-direction:column;
+}
+
+iframe {
+    width:100%;
+    height:100%;
+}
+
+.slideshow {
+    height:100%;
+}
+
+.carousel-inner {
+    height:100%;
+}
+
+.item {
+    height:100%;
+}
+
+.detail_title
+
+.carousel-control {
+    width:3%;
+}
+
+body.modal-open {
+    height: 100vh;
+    overflow: visible;
+    padding-right: 0 !important;
+}
+
+.close {
+    position: absolute;
+    margin-left: 98%;
+    z-index:2000;
+    color:darkred;
+}
+
+.platform_wrapper {
+    display:flex;
+    flex-direction:column;
+    margin-top:auto;
+    justify-self:flex-end;
+}
+
+.platform_wrapper > .platform_container {
+    position:relative !important;
+}
+
+#myModal {
+}
 

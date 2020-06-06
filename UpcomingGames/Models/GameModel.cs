@@ -15,6 +15,9 @@ namespace UpcomingGames.Models
         public List<int> platforms = new List<int>();
         public List<string> release_dates = new List<string>();
         public List<int> newest_platform_releases = new List<int>();
+        public List<string> genres = new List<string>();
+        public List<string> publishers = new List<string>();
+        public List<string> developers = new List<string>();
 
         public bool duplicate { get; set; }
         public int game_id { get; set; }
@@ -24,28 +27,38 @@ namespace UpcomingGames.Models
         public int newest_platform_release { get; set; }
         public string YT_trailer { get; set; } = null;
         public string cover_image { get; set; } = null;
+        public string summary { get; set; }
 
 
-        public GameModel(string json, int count = 0)
-        {
+        public GameModel(string json, int count = 0, bool gameinfo = false) {
             JArray jarray = JArray.Parse(json);
             JToken jUser = jarray[count];
             game_id = Int32.Parse((string)jUser["id"]);
             name = jUser["name"].ToString();
-            released = UnixTimeStampToDateTime(double.Parse((string)jUser["first_release_date"]));
-            cover_image = "//images.igdb.com/igdb/image/upload/t_cover_small_2x/" + (string)jUser["cover"]["image_id"] + ".jpg";
+            summary = (string)jUser["summary"];
+
             try
             {
-                    if (jUser.Children().Count() == 7)
+                if (jUser.Children().Count() == 10)
+                {
+                    for (int i = 0; i < 10; i++)
                     {
-                        for (int i = 0; i < 5; i++)
+                        if ((bool)jUser["involved_companies"][i]["developer"])
                         {
-                            images.Add($"//images.igdb.com/igdb/image/upload/t_screenshot_big/{(string)jUser["screenshots"][i]["image_id"]}.jpg");
+                            developers.Add((string)jUser["involved_companies"][i]["company"]["name"]);
+                        }
+                        else if ((bool)jUser["involved_companies"][i]["publisher"])
+                        {
+                            publishers.Add((string)jUser["involved_companies"][i]["company"]["name"]);
+                        }
+                        else
+                        {
                         }
                     }
-                    else
-                    {
-                    }
+                }
+                else
+                {
+                }
             }
             catch (Exception e)
             {
@@ -53,7 +66,43 @@ namespace UpcomingGames.Models
 
             try
             {
-                if (jUser.Children().Count() == 7)
+                if (jUser.Children().Count() == 10)
+                {
+                    for (int i = 0; i < 6; i++)
+                    {
+                        genres.Add((string)jUser["genres"][i]["name"]);
+                    }
+                }
+                else
+                {
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            try
+            {
+                if (jUser.Children().Count() == 10)
+                {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        images.Add($"//images.igdb.com/igdb/image/upload/t_screenshot_big/{(string)jUser["screenshots"][i]["image_id"]}.jpg");
+                    }
+                }
+                else
+                {
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            try
+            {
+                if (jUser.Children().Count() == 10)
                 {
                     for (int i = 0; i < 6; i++)
                     {
@@ -73,9 +122,68 @@ namespace UpcomingGames.Models
             {
 
             }
+            try
+            {
+                ReleasesAndPlatforms(jUser);
+            }
+            catch (Exception e)
+            {
+
+            }
+            SetClosestReleaseDate();
+        }
+
+        public GameModel(string json, int count = 0)
+        {
+            JArray jarray = JArray.Parse(json);
+            JToken jUser = jarray[count];
+            game_id = Int32.Parse((string)jUser["id"]);
+            name = jUser["name"].ToString();
+            released = UnixTimeStampToDateTime(double.Parse((string)jUser["first_release_date"]));
+            cover_image = "//images.igdb.com/igdb/image/upload/t_cover_small_2x/" + (string)jUser["cover"]["image_id"] + ".jpg";
 
 
 
+            //The code below gets a tempdate, and a tempplatform from the jUser, it then iterates on the int (tempplat)
+            //to see if the platforms list already contains an integer matching the one just found, if it does, it will check which integer is lowest, and keep the lowest one for that platform.
+            //(The reason i keep the lowest is because, usually a game will release globally at the same time except a few smaller regions, but i only care about the bigger portion of the world),
+            //and the lowest release date on a certain platform seems to be the global release date (in my testing atleast).
+            try
+            {
+                ReleasesAndPlatforms(jUser);
+            }
+            catch (Exception e)
+            {
+
+            }
+            SetClosestReleaseDate();
+        }
+
+
+
+
+        public string GetReadableDate(string original_date)
+        {
+            string date = DateTime.Parse(original_date).ToLongDateString();
+            return date;
+        }
+
+        /// <summary>
+        /// takes a double (unixTimeStamp) and converts it into a ToLongDateString. (Example - "Tuesday, July 14, 2020".
+        /// </summary>
+        /// <param name="unixTimeStamp"></param>
+        /// <returns></returns>
+        public string UnixTimeStampToDateTime(double unixTimeStamp)
+        {
+            // Unix timestamp is seconds past epoch
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp);
+            string date = dtDateTime.ToLongDateString();
+            return date;
+        }
+
+        public void ReleasesAndPlatforms(JToken jUser)
+        {
             //The code below gets a tempdate, and a tempplatform from the jUser, it then iterates on the int (tempplat)
             //to see if the platforms list already contains an integer matching the one just found, if it does, it will check which integer is lowest, and keep the lowest one for that platform.
             //(The reason i keep the lowest is because, usually a game will release globally at the same time except a few smaller regions, but i only care about the bigger portion of the world),
@@ -139,28 +247,8 @@ namespace UpcomingGames.Models
             {
 
             }
-            SetClosestReleaseDate();
         }
 
-        public string GetReadableDate(string original_date)
-        {
-            string date = DateTime.Parse(original_date).ToLongDateString();
-            return date;
-        }
-
-        /// <summary>
-        /// takes a double (unixTimeStamp) and converts it into a ToLongDateString. (Example - "Tuesday, July 14, 2020".
-        /// </summary>
-        /// <param name="unixTimeStamp"></param>
-        /// <returns></returns>
-        public string UnixTimeStampToDateTime(double unixTimeStamp)
-        {
-            // Unix timestamp is seconds past epoch
-            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
-            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
-            string date = dtDateTime.ToLongDateString();
-            return date;
-        }
 
         public void SetClosestReleaseDate()
         {

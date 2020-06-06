@@ -1,8 +1,7 @@
 ﻿@model IEnumerable<UpcomingGames.Models.GameModel>
-
 @foreach (var item in Model)
 {
-    <div class="game_container">
+    <a href="javascript:void(0)" class="game_container anchorDetail" data-id="@item.game_id">
         <div class="image_container">
             <img class="cover_image" src="@item.cover_image" />
         </div>
@@ -16,36 +15,68 @@
                         <p class="title_text">On</p>
                     </div>
                     <div class="platform_container">
-                            @for (int i = 0; i < item.newest_platform_releases.Count; i++)
+                        @for (int i = 0; i < item.newest_platform_releases.Count; i++)
+                        {
+                            if (item.newest_platform_releases.ElementAt(i) == 6)
                             {
-                                if (item.newest_platform_releases.ElementAt(i) == 6)
-                                {
-                                    <img class="" src="@Url.Content("~/Images/PC.svg")" height="18" width="30" />
-                                }
-                                else if (item.newest_platform_releases.ElementAt(i) == 48)
-                                {
-                                    <img class="ps4_logo" src="@Url.Content("~/Images/ps4.svg")" height="18" width="70" />
-                                }
-                                else if (item.newest_platform_releases.ElementAt(i) == 203)
-                                {
-                                    <p class="normal_text">Google Stadia</p>
-                                }
-                                else if (item.newest_platform_releases.ElementAt(i) == 167)
-                                {
-                                    <p class="normal_text">PS5</p>
-                                }
-                                else if (item.newest_platform_releases.ElementAt(i) == 169)
-                                {
-                                    <img class="ps4_logo" src="@Url.Content("~/Images/xbox-x.svg")" height="40" width="40" />
-                                }
-                                else if (item.newest_platform_releases.ElementAt(i) == 49)
-                                {
-                                    <img class="xbox" src="@Url.Content("~/Images/xbox-one.svg")" height="18" width="70" />
-                                }
+                                <img class="" src="@Url.Content("~/Images/PC.svg")" height="18" width="30" />
                             }
+                            else if (item.newest_platform_releases.ElementAt(i) == 48)
+                            {
+                                <img class="ps4_logo" src="@Url.Content("~/Images/ps4.svg")" height="18" width="70" />
+                            }
+                            else if (item.newest_platform_releases.ElementAt(i) == 203)
+                            {
+                                <p class="normal_text">Google Stadia</p>
+                            }
+                            else if (item.newest_platform_releases.ElementAt(i) == 167)
+                            {
+                                <p class="normal_text">PS5</p>
+                            }
+                            else if (item.newest_platform_releases.ElementAt(i) == 169)
+                            {
+                                <img class="ps4_logo" src="@Url.Content("~/Images/xbox-x.svg")" height="40" width="40" />
+                            }
+                            else if (item.newest_platform_releases.ElementAt(i) == 49)
+                            {
+                                <img class="xbox" src="@Url.Content("~/Images/xbox-one.svg")" height="18" width="70" />
+                            }
+                        }
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </a>
 }
+<script>
+    var TeamDetailPostBackURL = '/Game/Details';
+    $(function () {
+        $(".anchorDetail").click(function () {
+            var $buttonClicked = $(this);
+            var id = $buttonClicked.attr('data-id');
+            var options = { "backdrop": "static", keyboard: true };
+            $.ajax({
+                type: "GET",
+                url: TeamDetailPostBackURL,
+                contentType: "application/json; charset=utf-8",
+                data: { "Id": id },
+                datatype: "json",
+                success: function (data) {
+                    $('#myModalContent').html(data);
+                    $('#myModal').modal(options);
+                    $('#myModal').modal('show');
+
+                },
+                error: function () {
+                    alert("Dynamic content load failed.");
+                }
+            });
+        });
+        //$("#closebtn").on('click',function(){  
+        //    $('#myModal').modal('hide');    
+
+        $("#closbtn").click(function () {
+            $('#myModal').modal('hide');
+        });
+    });
+</script>

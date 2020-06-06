@@ -79,5 +79,17 @@ namespace UpcomingGames.Controllers
         {
             return PartialView(Model);
         }
+
+
+        [OutputCache(Duration = 86400)]
+        public ActionResult Details(int Id)
+        {
+            API_Handler aPI_Handler = new API_Handler();
+            System.Threading.Thread.Sleep(500);
+            var syncContext = SynchronizationContext.Current;
+            SynchronizationContext.SetSynchronizationContext(null);
+            var data = aPI_Handler.GetGameInfo(Id).Result;
+            return PartialView("_Details", data);
+        }
     }
 }

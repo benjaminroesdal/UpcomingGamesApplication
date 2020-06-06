@@ -3,68 +3,64 @@
 @{
     ViewBag.Title = "ListGames";
 }
-    <div class="wrapper">
-            @foreach (var item in Model)
-            {
-            <div class="game_container">
-                <div class="image_container">
-                    <img class="cover_image" src="@item.cover_image" />
-                </div>
-                <div class="game_info_container">
-                    <p class="title_text game_title">@item.name</p>
-                    <div class="game_info">
-                        <div class="release_info">
-                            <div class="release_text_container">
-                                <p class="title_text">Releasing</p>
-                                <p class="normal_text">@item.UnixTimeStampToDateTime(double.Parse(item.newest_release_date))</p>
-                                <p class="title_text">On</p>
-                            </div>
-                            <div class="platform_container">
-                                @for (int i = 0; i < item.newest_platform_releases.Count; i++)
+<div class="wrapper">
+    @foreach (var item in Model)
+    {
+        <a href="javascript:void(0)" class="game_container anchorDetail" data-id="@item.game_id">
+            <div class="image_container">
+                <img class="cover_image" src="@item.cover_image" />
+            </div>
+            <div class="game_info_container">
+                <p class="title_text game_title">@item.name</p>
+                <div class="game_info">
+                    <div class="release_info">
+                        <div class="release_text_container">
+                            <p class="title_text">Releasing</p>
+                            <p class="normal_text">@item.UnixTimeStampToDateTime(double.Parse(item.newest_release_date))</p>
+                            <p class="title_text">On</p>
+                        </div>
+                        <div class="platform_container">
+                            @for (int i = 0; i < item.newest_platform_releases.Count; i++)
+                            {
+                                if (item.newest_platform_releases.ElementAt(i) == 6)
                                 {
-                                    if (item.newest_platform_releases.ElementAt(i) == 6)
-                                    {
-                                        <img class="" src="@Url.Content("~/Images/PC.svg")" height="18" width="30" />
-                                    }
-                                    else if (item.newest_platform_releases.ElementAt(i) == 48)
-                                    {
-                                        <img class="ps4_logo" src="@Url.Content("~/Images/ps4.svg")" height="18" width="70" />
-                                    }
-                                    else if (item.newest_platform_releases.ElementAt(i) == 203)
-                                    {
-                                        <p class="normal_text">Google Stadia</p>
-                                    }
-                                    else if (item.newest_platform_releases.ElementAt(i) == 167)
-                                    {
-                                        <p class="normal_text">PS5</p>
-                                    }
-                                    else if (item.newest_platform_releases.ElementAt(i) == 169)
-                                    {
-                                        <img class="ps4_logo" src="@Url.Content("~/Images/xbox-x.svg")" height="40" width="40" />
-                                    }
-                                    else if (item.newest_platform_releases.ElementAt(i) == 49)
-                                    {
-                                        <img class="xbox" src="@Url.Content("~/Images/xbox-one.svg")" height="18" width="70" />
-                                    }
+                                    <img class="" src="@Url.Content("~/Images/PC.svg")" height="18" width="30" />
                                 }
-                            </div>
+                                else if (item.newest_platform_releases.ElementAt(i) == 48)
+                                {
+                                    <img class="ps4_logo" src="@Url.Content("~/Images/ps4.svg")" height="18" width="70" />
+                                }
+                                else if (item.newest_platform_releases.ElementAt(i) == 203)
+                                {
+                                    <p class="normal_text">Google Stadia</p>
+                                }
+                                else if (item.newest_platform_releases.ElementAt(i) == 167)
+                                {
+                                    <p class="normal_text">PS5</p>
+                                }
+                                else if (item.newest_platform_releases.ElementAt(i) == 169)
+                                {
+                                    <img class="ps4_logo" src="@Url.Content("~/Images/xbox-x.svg")" height="40" width="40" />
+                                }
+                                else if (item.newest_platform_releases.ElementAt(i) == 49)
+                                {
+                                    <img class="xbox" src="@Url.Content("~/Images/xbox-one.svg")" height="18" width="70" />
+                                }
+                            }
                         </div>
                     </div>
                 </div>
             </div>
-            }
-            <table>
-                <tbody id="trow">
-                </tbody>
-            </table>
-            <div class="loading_div">
-                <div id="loadingdiv" class="spinner-border text-danger" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-            </div>
+        </a>
+    }
+    <div class="loading_div">
+        <div id="loadingdiv" class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
+    </div>
+</div>
 
-    <script>
+<script>
         $(document).ready(function () {
     var NoMoreData = false;
     var pageoffset = 5;
@@ -82,7 +78,7 @@
                         function (data) {
                             pageoffset = pageoffset + 5;
                             NoMoreData = data.NoMoreData;
-                            $("#trow").append(data.HTMLString);
+                            $(".wrapper").append(data.HTMLString);
                             $("#loadingdiv").hide();
                             inProgress = false;
                         }
@@ -90,4 +86,41 @@
                 }
             });
         })
-    </script>
+
+
+
+
+        var TeamDetailPostBackURL = '/Game/Details';
+        $(function () {
+            $(".anchorDetail").click(function () {
+                var $buttonClicked = $(this);
+                var id = $buttonClicked.attr('data-id');
+                var options = { "backdrop":true, keyboard: true };
+                $.ajax({
+                    type: "GET",
+                    url: TeamDetailPostBackURL,
+                    contentType: "application/json; charset=utf-8",
+                    data: { "Id": id },
+                    datatype: "json",
+                    success: function (data) {
+                        $('#myModalContent').html(data);
+                        $('#myModal').modal(options);
+                        $('#myModal').modal('show');
+
+                    },
+                    error: function () {
+                        alert("Dynamic content load failed.");
+                    }
+                });
+            });
+            //$("#closebtn").on('click',function(){
+               // $('#myModal').modal('hide');
+
+            $("#closbtn").click(function () {
+                $('#myModal').modal('hide');
+            });
+        });
+
+        // Get the modal
+
+</script>
