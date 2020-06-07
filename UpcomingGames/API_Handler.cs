@@ -78,6 +78,8 @@ namespace UpcomingGames
             Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
             List<UpcomingGames.Models.GameModel> games = new List<Models.GameModel>();
             string mycontent = await SendStringRequest("https://api-v3.igdb.com/games/", $"fields involved_companies.company.name" +
+                $"                                                                        ,websites.category" +
+                $"                                                                        ,websites.url" +
                 $"                                                                        ,involved_companies.developer" +
                 $"                                                                        ,involved_companies.publisher" +
                 $"                                                                        ,genres.name,summary" +

@@ -43,6 +43,35 @@
                             }
                         }
                     </div>
+                    <div class="mobile_platform_container">
+                        @for (int i = 0; i < item.newest_platform_releases.Count; i++)
+                        {
+                            if (item.newest_platform_releases.ElementAt(i) == 6)
+                            {
+                                <p class="normal_text">PC</p>
+                            }
+                            else if (item.newest_platform_releases.ElementAt(i) == 48)
+                            {
+                                <p class="normal_text">PS4</p>
+                            }
+                            else if (item.newest_platform_releases.ElementAt(i) == 203)
+                            {
+                                <p class="normal_text">Google Stadia</p>
+                            }
+                            else if (item.newest_platform_releases.ElementAt(i) == 167)
+                            {
+                                <p class="normal_text">PS5</p>
+                            }
+                            else if (item.newest_platform_releases.ElementAt(i) == 169)
+                            {
+                                <p class="normal_text">Xbox X</p>
+                            }
+                            else if (item.newest_platform_releases.ElementAt(i) == 49)
+                            {
+                                <p class="normal_text">Xbox One</p>
+                            }
+                        }
+                    </div>
                 </div>
             </div>
         </div>

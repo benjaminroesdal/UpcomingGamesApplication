@@ -18,8 +18,8 @@
                         {
                             if (i == 0 && item.YT_trailer != null)
                             {
-                                <div class="item active">
-                                    <iframe src="@item.YT_trailer" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                <div class="item active video">
+                                    <iframe src="@item.YT_trailer" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen scrolling="yes"></iframe>
                                 </div>
                             }
                             else if (i == 0)
@@ -55,7 +55,7 @@
                         <div class="genre_container">
                             @for (int i = 0; i < item.genres.Count; i++)
                             {
-                                <p class="normal_text">@item.genres.ElementAt(i)</p>
+                                <p class="details-normal_text">@item.genres.ElementAt(i)</p>
                             }
                         </div>
                     </div>
@@ -64,7 +64,7 @@
                         <div class="developer_container">
                             @for (int i = 0; i < item.developers.Count; i++)
                             {
-                                <p class="normal_text">@item.developers.ElementAt(i)</p>
+                                <p class="details-normal_text">@item.developers.ElementAt(i)</p>
                             }
                         </div>
                     </div>
@@ -73,48 +73,97 @@
                         <div class="publisher_container">
                             @for (int i = 0; i < item.publishers.Count; i++)
                             {
-                                <p class="normal_text">@item.publishers.ElementAt(i)</p>
+                                <p class="details-normal_text">@item.publishers.ElementAt(i)</p>
                             }
                         </div>
                     </div>
                 </div>
                 <div class="platform_wrapper">
-                    <h1 class="title_text">Platforms</h1>
-                    <div class="platform_container">
-                        @for (int i = 0; i < item.platforms.Count; i++)
-                        {
-                            if (item.platforms.ElementAt(i) == 6)
+                    <div class="platform_column">
+                        <h1 class="title_text">Platforms</h1>
+                        <div class="details-platform_container">
+                            @for (int i = 0; i < item.platforms.Count; i++)
                             {
-                                <img class="" src="@Url.Content("~/Images/PC.svg")" height="18" width="30" />
+                                if (item.platforms.ElementAt(i) == 6)
+                                {
+                                    <p class="details-normal_text">PC</p>
+                                    <p class="details-release_text">@item.UnixTimeStampToDateTime(double.Parse(item.release_dates.ElementAt(i)))</p>
+                                }
+                                else if (item.platforms.ElementAt(i) == 48)
+                                {
+                                    <p class="details-normal_text">PS4</p>
+                                    <p class="details-release_text">@item.UnixTimeStampToDateTime(double.Parse(item.release_dates.ElementAt(i)))</p>
+                                }
+                                else if (item.platforms.ElementAt(i) == 203)
+                                {
+                                    <p class="details-normal_text">Google Stadia</p>
+                                    <p class="details-release_text">@item.UnixTimeStampToDateTime(double.Parse(item.release_dates.ElementAt(i)))</p>
+                                }
+                                else if (item.platforms.ElementAt(i) == 167)
+                                {
+                                    <p class="details-normal_text">PS5</p>
+                                    <p class="details-release_text">@item.UnixTimeStampToDateTime(double.Parse(item.release_dates.ElementAt(i)))</p>
+                                }
+                                else if (item.platforms.ElementAt(i) == 169)
+                                {
+                                    <p class="details-normal_text">Xbox X</p>
+                                    <p class="details-release_text">@item.UnixTimeStampToDateTime(double.Parse(item.release_dates.ElementAt(i)))</p>
+                                }
+                                else if (item.platforms.ElementAt(i) == 49)
+                                {
+                                    <p class="details-normal_text">Xbox One</p>
+                                    <p class="details-release_text">@item.UnixTimeStampToDateTime(double.Parse(item.release_dates.ElementAt(i)))</p>
+                                }
                             }
-                            else if (item.platforms.ElementAt(i) == 48)
+                        </div>
+                    </div>
+                    <div class="game_links_wrapper">
+                        <h1 class="title_text">Links</h1>
+                        <div class="links-container">
+                            @if (item.official_site != null)
                             {
-                                <img class="ps4_logo" src="@Url.Content("~/Images/ps4.svg")" height="18" width="70" />
+                            <a href="@item.official_site">Official Site</a>
                             }
-                            else if (item.platforms.ElementAt(i) == 203)
+                            @if (item.steam_site != null)
                             {
-                                <p class="normal_text">Google Stadia</p>
+                            <a href="@item.steam_site">Steam</a>
                             }
-                            else if (item.platforms.ElementAt(i) == 167)
+                            @if (item.epicgames_site != null)
                             {
-                                <p class="normal_text">PS5</p>
+                            <a href="@item.epicgames_site">Epic Games</a>
                             }
-                            else if (item.platforms.ElementAt(i) == 169)
+                            @if (item.gog_site != null)
                             {
-                                <img class="ps4_logo" src="@Url.Content("~/Images/xbox-x.svg")" height="40" width="40" />
+                            <a href="@item.gog_site">GoG</a>
                             }
-                            else if (item.platforms.ElementAt(i) == 49)
-                            {
-                                <img class="xbox" src="@Url.Content("~/Images/xbox-one.svg")" height="18" width="70" />
-                            }
-                        }
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col_2">
-            <h1 class="title_text detail_title">Summary</h1>
-            <p class="normal_text">@item.summary</p>
+            <div class="summary_wrapper">
+                <div class="summary_container">
+                    <h1 class="title_text detail_title">Summary</h1>
+                    <p class="details-normal_text">@item.summary</p>
+                </div>
+                <a id="more" href="#">Read more </a>
+            </div>
         </div>
     </div>
 }
+<script>
+    $('#more').click(function (e) {
+        e.stopPropagation();
+        $('.summary_container').css({
+            'min-height': '100px',
+            'max-height': '2000px'
+        })
+    });
+
+    $(document).click(function () {
+        $('#more').css({
+            'max-height': '300px'
+        })
+    })
+</script>

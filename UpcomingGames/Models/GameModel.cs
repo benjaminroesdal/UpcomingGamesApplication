@@ -28,6 +28,10 @@ namespace UpcomingGames.Models
         public string YT_trailer { get; set; } = null;
         public string cover_image { get; set; } = null;
         public string summary { get; set; }
+        public string official_site { get; set; } = null;
+        public string steam_site { get; set; } = null;
+        public string epicgames_site { get; set; } = null;
+        public string gog_site { get; set; } = null;
 
 
         public GameModel(string json, int count = 0, bool gameinfo = false) {
@@ -39,7 +43,7 @@ namespace UpcomingGames.Models
 
             try
             {
-                if (jUser.Children().Count() == 10)
+                if (jUser.Children().Count() == 11)
                 {
                     for (int i = 0; i < 10; i++)
                     {
@@ -66,7 +70,7 @@ namespace UpcomingGames.Models
 
             try
             {
-                if (jUser.Children().Count() == 10)
+                if (jUser.Children().Count() == 11)
                 {
                     for (int i = 0; i < 6; i++)
                     {
@@ -84,7 +88,7 @@ namespace UpcomingGames.Models
 
             try
             {
-                if (jUser.Children().Count() == 10)
+                if (jUser.Children().Count() == 11)
                 {
                     for (int i = 0; i < 5; i++)
                     {
@@ -102,7 +106,7 @@ namespace UpcomingGames.Models
 
             try
             {
-                if (jUser.Children().Count() == 10)
+                if (jUser.Children().Count() == 11)
                 {
                     for (int i = 0; i < 6; i++)
                     {
@@ -125,6 +129,37 @@ namespace UpcomingGames.Models
             try
             {
                 ReleasesAndPlatforms(jUser);
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            try
+            {
+                if (jUser.Children().Count() == 11)
+                {
+                    for (int i = 0; i < 10; i++)
+                    {
+                        int tempcat = Int32.Parse((string)jUser["websites"][i]["category"]);
+                        if (tempcat == 1)
+                        {
+                            official_site = (string)jUser["websites"][i]["url"];
+                        }
+                        else if (tempcat == 13)
+                        {
+                            steam_site = (string)jUser["websites"][i]["url"];
+                        }
+                        else if (tempcat == 16)
+                        {
+                            epicgames_site = (string)jUser["websites"][i]["url"];
+                        }
+                        else if (tempcat == 17)
+                        {
+                            gog_site = (string)jUser["websites"][i]["url"];
+                        }
+                    }
+                }
             }
             catch (Exception e)
             {
