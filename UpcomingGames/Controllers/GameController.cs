@@ -21,7 +21,7 @@ namespace UpcomingGames.Controllers
         {
             GameCollection gameCollection = new GameCollection();
             //API_Handler getRequest = new API_Handler();
-            //var rowdata = await getRequest.GetThisMonthGames();
+            //var rowdata = await getRequest.GetUpcomingGames();
             System.Threading.Thread.Sleep(200);
             var syncContext = SynchronizationContext.Current;
             SynchronizationContext.SetSynchronizationContext(null);

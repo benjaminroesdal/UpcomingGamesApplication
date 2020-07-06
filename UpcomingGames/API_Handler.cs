@@ -21,7 +21,7 @@ namespace UpcomingGames
         /// </summary>
         /// <param name="endpoint">The desired endpoint to get data from</param>
         /// <returns>List task</returns>
-        public async Task<List<UpcomingGames.Models.GameModel>> GetThisMonthGames()
+        public async Task<List<UpcomingGames.Models.GameModel>> GetUpcomingGames()
         {
             Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds - 864000;
             List<UpcomingGames.Models.GameModel> games = new List<Models.GameModel>();
@@ -97,63 +97,6 @@ namespace UpcomingGames
             return games;
         }
 
-        /// <summary>
-        /// This method awaits the GetThisMonthGames method, when it's done it puts the list from gamesgames into gamerequest list.
-        /// </summary>
-        /// <returns></returns>
-
-        //public async Task GetGameCover()
-        //{
-        //    List<int> templist = new List<int>();
-        //    List<int> gameidlist = new List<int>();
-        //    List<string> querylist = new List<string>();
-        //    GameCollection gameCollection = GameCollection.Instance;
-        //    for (int i = 0; i < gameCollection.listofgames.Count; i++)
-        //    {
-        //        if (i + 1 == gameCollection.listofgames.Count)
-        //        {
-        //            querylist.Add(gameCollection.listofgames.ElementAt(i).game_id.ToString());
-        //        }
-        //        else
-        //        {
-        //            querylist.Add(gameCollection.listofgames.ElementAt(i).game_id.ToString() + ",");
-        //        }
-        //    }
-        //    string testingstring = string.Join("", querylist);
-        //    string mycontent = await SendStringRequest("https://api-v3.igdb.com/covers/", $"fields *; where game = ({testingstring}); limit 100;");
-        //    string gameid;
-        //    string image_id;
-        //    for (int i = 0; i < 100; i++)
-        //    {
-        //        try
-        //        {
-        //            JArray jarray = JArray.Parse(mycontent);
-        //            JToken jUser = jarray[i];
-        //            gameid = (string)jUser["game"];
-        //            image_id = (string)jUser["image_id"];
-        //            if (templist.Contains(Int32.Parse(gameid)))
-        //            {
-        //            }
-        //            else
-        //            {
-        //                foreach (var item in gameCollection.listofgames)
-        //                {
-        //                    if (item.game_id == Int32.Parse(gameid))
-        //                    {
-        //                        item.cover_image = $"https://images.igdb.com/igdb/image/upload/t_cover_small_2x/{image_id}.jpg";
-        //                        templist.Add(Int32.Parse(gameid));
-        //                    }
-        //                    else
-        //                    {
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        catch (Exception e)
-        //        {
-        //        }
-        //    }
-        //}
 
 
 

@@ -18,7 +18,7 @@ namespace UpcomingGames
         public async Task<List<GameModel>> GameList()
         {
             API_Handler getRequest = new API_Handler();
-            listofgames = await getRequest.GetThisMonthGames();
+            listofgames = await getRequest.GetUpcomingGames();
             SortGameList();
             return listofgames;
         }
@@ -44,13 +44,13 @@ namespace UpcomingGames
             }
         }
 
-        public async Task<List<GameModel>> GetGameList(int offset = 0)
+        public async Task<List<GameModel>> GetGameList()
         {
             await GameList();
             List<GameModel> templist = new List<GameModel>();
             try
             {
-                for (int i = offset; templist.Count() < 5; i++)
+                for (int i = 0; templist.Count() < 5; i++)
                 {
                     templist.Add(listofgames[i]);
                 }
