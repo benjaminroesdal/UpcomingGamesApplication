@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Threading.Tasks;
@@ -46,7 +47,6 @@ namespace UpcomingGames
         public async Task<List<GameModel>> GetGameList(int offset = 0)
         {
             await GameList();
-            SortGameList();
             List<GameModel> templist = new List<GameModel>();
             try
             {

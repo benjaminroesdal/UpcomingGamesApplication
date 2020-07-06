@@ -1,13 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Net.Http;
-using System.Text.RegularExpressions;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
-using System.Web;
-using UpcomingGames.Controllers;
 using UpcomingGames.Models;
 
 namespace UpcomingGames
@@ -28,7 +23,7 @@ namespace UpcomingGames
         /// <returns>List task</returns>
         public async Task<List<UpcomingGames.Models.GameModel>> GetThisMonthGames()
         {
-            Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds - 864000;
             List<UpcomingGames.Models.GameModel> games = new List<Models.GameModel>();
             string mycontent = await SendStringRequest("https://api-v3.igdb.com/games/", $"fields id" +
                 $"                                                                        ,first_release_date" +
@@ -36,7 +31,7 @@ namespace UpcomingGames
                 $"                                                                        ,release_dates.date" +
                 $"                                                                        ,release_dates.platform" +
                 $"                                                                        ,platforms,cover.image_id;" +
-                $"                                                                        where release_dates.date > {unixTimestamp} & hypes > 15; limit 100;");
+                $"                                                                        where release_dates.date > {unixTimestamp} & hypes > 15; limit 200;");
             bool stringcontent = true;
             int count = 0;
             while (stringcontent)
@@ -50,19 +45,12 @@ namespace UpcomingGames
                     }
                     else
                     {
-                        //mycontent is json data from the GET request, and count is the game result
+                        //mycontent is json data from the POST request, and count is the game result
                         //so when it has run the loop once the count is 0, which means game 0 which Gamemodel then filters
-                        //Then it counts up to 1, so GameModel know what data to fill into the properties of that instance
-                        UpcomingGames.Models.GameModel game = new UpcomingGames.Models.GameModel(mycontent, count);
-                        if (game.duplicate != true)
-                        {
-                            games.Add(game);
-                            count++;
-                        }
-                        else
-                        {
-
-                        }
+                        //Then it counts up to 1, so GameModel know what data to fill into the properties of that object
+                        UpcomingGames.Models.GameModel game = new UpcomingGames.Models.GameModel(mycontent, count, false);
+                        games.Add(game);
+                        count++;
                     }
                 }
                 catch (Exception e)
@@ -82,7 +70,8 @@ namespace UpcomingGames
                 $"                                                                        ,websites.url" +
                 $"                                                                        ,involved_companies.developer" +
                 $"                                                                        ,involved_companies.publisher" +
-                $"                                                                        ,genres.name,summary" +
+                $"                                                                        ,genres.name" +
+                $"                                                                        ,summary" +
                 $"                                                                        ,id" +
                 $"                                                                        ,name,screenshots.*" +
                 $"                                                                        ,release_dates.date" +
@@ -96,12 +85,9 @@ namespace UpcomingGames
             {
                 try
                 {
-                UpcomingGames.Models.GameModel game = new UpcomingGames.Models.GameModel(mycontent, count,true);
-                   if (game.duplicate != true)
-                   {
-                       games.Add(game);
-                       count++;
-                   }
+                    UpcomingGames.Models.GameModel game = new UpcomingGames.Models.GameModel(mycontent, count, true);
+                    games.Add(game);
+                    count++;
                 }
                 catch (Exception e)
                 {

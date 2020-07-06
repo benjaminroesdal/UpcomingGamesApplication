@@ -1,11 +1,7 @@
-﻿using Microsoft.Ajax.Utilities;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-using System.Web;
 
 namespace UpcomingGames.Models
 {
@@ -19,7 +15,6 @@ namespace UpcomingGames.Models
         public List<string> publishers = new List<string>();
         public List<string> developers = new List<string>();
 
-        public bool duplicate { get; set; }
         public int game_id { get; set; }
         public string name { get; set; } = null;
         public string released { get; set; } = null;
@@ -34,167 +29,108 @@ namespace UpcomingGames.Models
         public string gog_site { get; set; } = null;
 
 
-        public GameModel(string json, int count = 0, bool gameinfo = false) {
-            JArray jarray = JArray.Parse(json);
-            JToken jUser = jarray[count];
-            game_id = Int32.Parse((string)jUser["id"]);
-            name = jUser["name"].ToString();
-            summary = (string)jUser["summary"];
-
-            try
-            {
-                if (jUser.Children().Count() == 11)
-                {
-                    for (int i = 0; i < 10; i++)
-                    {
-                        if ((bool)jUser["involved_companies"][i]["developer"])
-                        {
-                            developers.Add((string)jUser["involved_companies"][i]["company"]["name"]);
-                        }
-                        else if ((bool)jUser["involved_companies"][i]["publisher"])
-                        {
-                            publishers.Add((string)jUser["involved_companies"][i]["company"]["name"]);
-                        }
-                        else
-                        {
-                        }
-                    }
-                }
-                else
-                {
-                }
-            }
-            catch (Exception e)
-            {
-            }
-
-            try
-            {
-                if (jUser.Children().Count() == 11)
-                {
-                    for (int i = 0; i < 6; i++)
-                    {
-                        genres.Add((string)jUser["genres"][i]["name"]);
-                    }
-                }
-                else
-                {
-                }
-            }
-            catch (Exception e)
-            {
-
-            }
-
-            try
-            {
-                if (jUser.Children().Count() == 11)
-                {
-                    for (int i = 0; i < 5; i++)
-                    {
-                        images.Add($"//images.igdb.com/igdb/image/upload/t_screenshot_big/{(string)jUser["screenshots"][i]["image_id"]}.jpg");
-                    }
-                }
-                else
-                {
-                }
-            }
-            catch (Exception e)
-            {
-
-            }
-
-            try
-            {
-                if (jUser.Children().Count() == 11)
-                {
-                    for (int i = 0; i < 6; i++)
-                    {
-                        string tempname = (string)jUser["videos"][i]["name"];
-                        if (tempname == "Trailer")
-                        {
-                            YT_trailer = "https://www.youtube.com/embed/" + (string)jUser["videos"][i]["video_id"];
-                        }
-                        else
-                        {
-
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-
-            }
-            try
-            {
-                ReleasesAndPlatforms(jUser);
-            }
-            catch (Exception e)
-            {
-
-            }
-
-            try
-            {
-                if (jUser.Children().Count() == 11)
-                {
-                    for (int i = 0; i < 10; i++)
-                    {
-                        int tempcat = Int32.Parse((string)jUser["websites"][i]["category"]);
-                        if (tempcat == 1)
-                        {
-                            official_site = (string)jUser["websites"][i]["url"];
-                        }
-                        else if (tempcat == 13)
-                        {
-                            steam_site = (string)jUser["websites"][i]["url"];
-                        }
-                        else if (tempcat == 16)
-                        {
-                            epicgames_site = (string)jUser["websites"][i]["url"];
-                        }
-                        else if (tempcat == 17)
-                        {
-                            gog_site = (string)jUser["websites"][i]["url"];
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-
-            }
-            SetClosestReleaseDate();
-        }
-
-        public GameModel(string json, int count = 0)
+        public GameModel(string json, int count, bool gameinfo = false)
         {
-            JArray jarray = JArray.Parse(json);
-            JToken jUser = jarray[count];
-            game_id = Int32.Parse((string)jUser["id"]);
-            name = jUser["name"].ToString();
-            released = UnixTimeStampToDateTime(double.Parse((string)jUser["first_release_date"]));
-            cover_image = "//images.igdb.com/igdb/image/upload/t_cover_small_2x/" + (string)jUser["cover"]["image_id"] + ".jpg";
-
-
-
-            //The code below gets a tempdate, and a tempplatform from the jUser, it then iterates on the int (tempplat)
-            //to see if the platforms list already contains an integer matching the one just found, if it does, it will check which integer is lowest, and keep the lowest one for that platform.
-            //(The reason i keep the lowest is because, usually a game will release globally at the same time except a few smaller regions, but i only care about the bigger portion of the world),
-            //and the lowest release date on a certain platform seems to be the global release date (in my testing atleast).
-            try
+            JArray jArray = JArray.Parse(json);
+            JToken jUser = jArray[count];
+            if (!gameinfo)
             {
+                game_id = Int32.Parse((string)jUser["id"]);
+                name = (string)jUser["name"];
+                released = UnixTimeStampToDateTime(double.Parse((string)jUser["first_release_date"]));
+                cover_image = "//images.igdb.com/igdb/image/upload/t_cover_small_2x/" + (string)jUser["cover"]["image_id"] + ".jpg";
                 ReleasesAndPlatforms(jUser);
+                SetClosestReleaseDate();
             }
-            catch (Exception e)
+            else if (gameinfo)
             {
-
+                game_id = Int32.Parse((string)jUser["id"]);
+                name = (string)jUser["name"];
+                summary = (string)jUser["summary"];
+                SetCompanies(jUser);
+                SetGenres(jUser);
+                ReleasesAndPlatforms(jUser);
+                SetImages(jUser);
+                SetTrailer(jUser);
+                SetWebsites(jUser);
+                SetClosestReleaseDate();
             }
-            SetClosestReleaseDate();
         }
 
+        public void SetCompanies(JToken jUser)
+        {
+            for (int i = 0; i < jUser["involved_companies"].Count(); i++)
+            {
+                if ((bool)jUser["involved_companies"][i]["developer"])
+                {
+                    developers.Add((string)jUser["involved_companies"][i]["company"]["name"]);
+                }
+                else if ((bool)jUser["involved_companies"][i]["publisher"])
+                {
+                    publishers.Add((string)jUser["involved_companies"][i]["company"]["name"]);
+                }
+                else
+                {
+                }
+            }
+        }
 
+        public void SetGenres(JToken jUser)
+        {
+            for (int i = 0; i < jUser["genres"].Count(); i++)
+            {
+                genres.Add((string)jUser["genres"][i]["name"]);
+            }
+        }
+
+        public void SetImages(JToken jUser)
+        {
+            for (int i = 0; i < jUser["screenshots"].Count(); i++)
+            {
+                images.Add($"//images.igdb.com/igdb/image/upload/t_screenshot_big/{(string)jUser["screenshots"][i]["image_id"]}.jpg");
+            }
+        }
+
+        public void SetTrailer(JToken jUser)
+        {
+            for (int i = 0; i < jUser["videos"].Count(); i++)
+            {
+                string tempname = (string)jUser["videos"][i]["name"];
+                if (tempname == "Trailer")
+                {
+                    YT_trailer = "https://www.youtube.com/embed/" + (string)jUser["videos"][i]["video_id"];
+                    break;
+                }
+                else
+                {
+
+                }
+            }
+        }
+
+        public void SetWebsites(JToken jUser)
+        {
+            for (int i = 0; i < jUser["websites"].Count(); i++)
+            {
+                int tempcat = Int32.Parse((string)jUser["websites"][i]["category"]);
+                if (tempcat == 1)
+                {
+                    official_site = (string)jUser["websites"][i]["url"];
+                }
+                else if (tempcat == 13)
+                {
+                    steam_site = (string)jUser["websites"][i]["url"];
+                }
+                else if (tempcat == 16)
+                {
+                    epicgames_site = (string)jUser["websites"][i]["url"];
+                }
+                else if (tempcat == 17)
+                {
+                    gog_site = (string)jUser["websites"][i]["url"];
+                }
+            }
+        }
 
 
         public string GetReadableDate(string original_date)
@@ -226,7 +162,7 @@ namespace UpcomingGames.Models
             try
             {
                 //Loops 10 times in case a game has all 2020 platforms.
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < jUser["release_dates"].Count(); i++)
                 {
                     string tempdate = (string)jUser["release_dates"][i]["date"];
                     int tempplat = Int32.Parse((string)jUser["release_dates"][i]["platform"]);
@@ -250,7 +186,7 @@ namespace UpcomingGames.Models
                                 if (platforms.ElementAt(j) == tempplat)
                                 {
                                     //If the tempdate is lower than the current date at the (j) index, it will remove the higher int, and replace it with the lower version (tempdate)
-                                    if (Int32.Parse(tempdate) < Int32.Parse(release_dates.ElementAt(j)) && Int32.Parse(tempdate) < (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds)
+                                    if (Int32.Parse(tempdate) < Int32.Parse(release_dates.ElementAt(j)) )
                                     {
                                         release_dates.RemoveAt(j);
                                         platforms.RemoveAt(j);
@@ -310,7 +246,7 @@ namespace UpcomingGames.Models
                 {
 
                 }
-            }
+            } 
             newest_release_date = release_dates[tempindex];
             //Takes the last release date, and puts it into a string named newest_release_date
             for (int i = 0; i < release_dates.Count; i++)

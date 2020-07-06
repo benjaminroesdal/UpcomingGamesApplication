@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using UpcomingGames.Models;
 using System.Threading;
 using System.IO;
+using System.Diagnostics;
 
 namespace UpcomingGames.Controllers
 {
@@ -21,7 +22,7 @@ namespace UpcomingGames.Controllers
             GameCollection gameCollection = new GameCollection();
             //API_Handler getRequest = new API_Handler();
             //var rowdata = await getRequest.GetThisMonthGames();
-            System.Threading.Thread.Sleep(200);;
+            System.Threading.Thread.Sleep(200);
             var syncContext = SynchronizationContext.Current;
             SynchronizationContext.SetSynchronizationContext(null);
             var rowdata = gameCollection.GetGameList().Result;
@@ -54,7 +55,7 @@ namespace UpcomingGames.Controllers
         public ActionResult InfiniteScroll(int pageoffset)
         {
             GameCollection gameCollection = new GameCollection();
-            System.Threading.Thread.Sleep(200);
+            System.Threading.Thread.Sleep(100);
             int pagesize = 5;
             var syncContext = SynchronizationContext.Current;
             SynchronizationContext.SetSynchronizationContext(null);
@@ -78,7 +79,7 @@ namespace UpcomingGames.Controllers
         public ActionResult Details(int Id)
         {
             API_Handler aPI_Handler = new API_Handler();
-            System.Threading.Thread.Sleep(500);
+            System.Threading.Thread.Sleep(10);
             var syncContext = SynchronizationContext.Current;
             SynchronizationContext.SetSynchronizationContext(null);
             var data = aPI_Handler.GetGameInfo(Id).Result;

@@ -1,0 +1,5 @@
+C:\Users\benj6414\Documents\GitHub\UpcomingGamesApplication\.vs\UpcomingGamesApplication\v16\lut\0\b\UpcomingGames.dll.config
+C:\Users\benj6414\Documents\GitHub\UpcomingGamesApplication\.vs\UpcomingGamesApplication\v16\lut\0\b\UpcomingGames.dll
+C:\Users\benj6414\Documents\GitHub\UpcomingGamesApplication\.vs\UpcomingGamesApplication\v16\lut\0\i\UpcomingGames\Debug\UpcomingGames.csproj.App.config
+C:\Users\benj6414\Documents\GitHub\UpcomingGamesApplication\.vs\UpcomingGamesApplication\v16\lut\0\i\UpcomingGames\Debug\UpcomingGames.csproj.CopyComplete
+C:\Users\benj6414\Documents\GitHub\UpcomingGamesApplication\.vs\UpcomingGamesApplication\v16\lut\0\i\UpcomingGames\Debug\UpcomingGames.dll

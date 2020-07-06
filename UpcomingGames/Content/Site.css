@@ -61,6 +61,14 @@ body {
         -webkit-font-smoothing: antialiased;
     }
 
+    .game_container:active {
+        transform: scale(1.02,1.02);
+        -webkit-font-smoothing: antialiased;
+        transition: all .2s ease-in-out;
+    }
+
+
+
     .image_container {
         border-radius: 30px;
         width: 30%;
