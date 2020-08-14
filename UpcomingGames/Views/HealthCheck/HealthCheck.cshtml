@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewBag.Title = "HealthCheck";
+}
+
+<h2>HealthCheck</h2>
+@{
+    HealthCheck healthCheck = new HealthCheck();
+
+    if (healthCheck.supportedVersion >= healthCheck.windowsversion)
+    {
+        <p class="supported_version">Version(@healthCheck.windowsversion) is supported!</p>
+    }
+    else
+    {
+        <p class="unsupported_version">Version(@healthCheck.windowsversion) is NOT supported! please update to @healthCheck.supportedVersion or later!</p>
+    }
+
+    if (healthCheck.frameworkversion >= healthCheck.supportedFrameworkVersion)
+    {
+        <p class="supported_version">Version(@healthCheck.frameworkversion) is supported!</p>
+    }
+    else
+    {
+        <p class="unsupported_version">Version(@healthCheck.frameworkversion) is NOT supported! please update to @healthCheck.supportedFrameworkVersion or later!</p>
+    }
+}
+
+

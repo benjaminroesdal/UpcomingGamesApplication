@@ -14,6 +14,16 @@ p {
 body {
 }
 
+.supported_version{
+    background-color:green;
+    width:200px;
+}
+
+.unsupported_version {
+    background-color:red;
+    width:200px;
+}
+
 /* Set padding to keep content from hitting the edges */
 .body-content {
 
@@ -65,6 +75,7 @@ body {
         transform: scale(1.02,1.02);
         -webkit-font-smoothing: antialiased;
         transition: all .2s ease-in-out;
+        background-color:rgba(94, 97, 107, 0.70);
     }
 
 
@@ -431,6 +442,9 @@ body {
         -moz-box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.75);
         box-shadow: 0px 0px 14px 0px rgba(0,0,0,0.75);
     }
+        .game_container:active {
+            background-color: rgba(94, 97, 107, 0.70);
+        }
 
     .game_info_container {
         padding:4px;

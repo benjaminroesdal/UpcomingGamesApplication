@@ -23,7 +23,7 @@ namespace UpcomingGames
         /// <returns>List task</returns>
         public async Task<List<UpcomingGames.Models.GameModel>> GetUpcomingGames()
         {
-            Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds - 864000;
+            Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
             List<UpcomingGames.Models.GameModel> games = new List<Models.GameModel>();
             string mycontent = await SendStringRequest("https://api-v3.igdb.com/games/", $"fields id" +
                 $"                                                                        ,first_release_date" +
@@ -31,7 +31,7 @@ namespace UpcomingGames
                 $"                                                                        ,release_dates.date" +
                 $"                                                                        ,release_dates.platform" +
                 $"                                                                        ,platforms,cover.image_id;" +
-                $"                                                                        where release_dates.date > {unixTimestamp} & hypes > 15; limit 200;");
+                $"                                                                        where release_dates.date > {unixTimestamp} & hypes > 10   ; limit 200;");
             bool stringcontent = true;
             int count = 0;
             while (stringcontent)
